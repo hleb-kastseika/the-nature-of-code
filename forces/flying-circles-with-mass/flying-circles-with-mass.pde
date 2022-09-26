@@ -3,6 +3,7 @@ class Mover {
     PVector velocity;
     PVector acceleration;
     float mass;
+    float G = 0.4;
 
     Mover(float m, float x, float y) {
         mass = m;
@@ -25,7 +26,7 @@ class Mover {
     void display() {
         stroke(0);
         fill(175);
-        ellipse(location.x, location.y, mass * 16, mass * 16);
+        ellipse(location.x,location.y,mass*16,mass*16);
     }
 
     void checkEdges() {
@@ -41,28 +42,41 @@ class Mover {
             location.y = height;
         }
     }
-}
+    
+    PVector attract(Mover m) {
+        PVector force = PVector.sub(location, m.location);
+        float distance = force.mag();
+        distance = constrain(distance, 5.0, 25.0);
+        force.normalize();
 
-Mover[] movers = new Mover[100];
-
-void setup() {
-    size(1200, 800);
-    for (int i = 0; i < movers.length; i++) {
-        movers[i] = new Mover(random(0.1, 5), 0, 0);
+        float strength = (G * mass * m.mass) / (distance * distance);
+        force.mult(strength);
+        return force;
     }
 }
 
+Mover[] movers = new Mover[20];
+ 
+float g = 0.4;
+ 
+void setup() {
+    size(1400, 600);
+    for (int i = 0; i < movers.length; i++) {
+        movers[i] = new Mover(random(0.1, 2), random(width), random(height));
+    }
+}
+ 
 void draw() {
     background(255);
  
-    PVector wind = new PVector(0.01, 0);
-    PVector gravity = new PVector(0, 0.1);
- 
     for (int i = 0; i < movers.length; i++) {
-        movers[i].applyForce(wind);
-        movers[i].applyForce(gravity);
+        for (int j = 0; j < movers.length; j++) {
+            if (i != j) {
+                PVector force = movers[j].attract(movers[i]);
+                movers[i].applyForce(force);
+            }
+        }
         movers[i].update();
         movers[i].display();
-        movers[i].checkEdges();
     }
 }
