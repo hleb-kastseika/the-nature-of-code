@@ -64,15 +64,15 @@ ArrayList<DNA> matingPool;
 String target;
 
 void setup() {
-  size(640, 360);
+    size(640, 360);
 
-  target = "to be or not to be";
-  mutationRate = 0.01;
+    target = "to be or not to be";
+    mutationRate = 0.01;
 
-  population = new DNA[totalPopulation];
-  for (int i = 0; i < population.length; i++) {
-    population[i] = new DNA();
-  }
+    population = new DNA[totalPopulation];
+    for (int i = 0; i < population.length; i++) {
+        population[i] = new DNA();
+    }
 }
 int genNumber = 0;
 
